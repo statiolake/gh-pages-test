@@ -25,7 +25,9 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Generate Static Pages
-        run: cargo run
+        run: cargo run --release
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
