@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=500, initial-scale=1.0" />
-    <title>List of statiolake's repositories</title>
-  </head>
-  <body>
-    <h1>List of statiolake's repositories</h1>
-    Updated at: {{ date }}
-
-    <ul>
-      {% for repo in repositories %}
-      <li>
-        <a href="{{ repo.url }}">{{ repo.name }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=500, initial-scale=1.0" />
+        <title>List of statiolake's repositories</title>
+    </head>
+    <body>
+        <h1>List of statiolake's repositories</h1>
+        Updated at: {{ date }}
+        <ul>
+            {% for repo in repositories %}
+                <li>
+                    <a href="{{ repo.url }}">{{ repo.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </body>
 </html>
-
 <!-- vim: set ft=htmldjango -->
