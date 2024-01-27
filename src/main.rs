@@ -10,7 +10,7 @@ pub struct Repository {
 }
 
 fn get_repositories() -> Vec<Repository> {
-    let stdout = Command::new("gh")
+    let output = Command::new("gh")
         .arg("repo")
         .arg("list")
         .arg("--json")
@@ -18,14 +18,18 @@ fn get_repositories() -> Vec<Repository> {
         .arg("--limit")
         .arg("1000")
         .output()
-        .unwrap()
-        .stdout;
+        .unwrap();
 
-    serde_json::from_slice::<Vec<Repository>>(&stdout)
-        .unwrap()
-        .into_iter()
-        .filter(|repo| repo.visibility == "PUBLIC")
-        .collect()
+    let stdout = output.stdout;
+    if let Ok(repositories) = serde_json::from_slice::<Vec<Repository>>(&stdout) {
+        repositories
+            .into_iter()
+            .filter(|repo| repo.visibility == "PUBLIC")
+            .collect()
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        panic!("error: failed to parse repositories: {}", stderr);
+    }
 }
 
 fn main() {
