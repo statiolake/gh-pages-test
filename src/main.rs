@@ -1,8 +1,9 @@
-use chrono::Local;
-use serde::Deserialize;
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 use std::{fs, process::Command};
+use tera::{Context, Tera};
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct Repository {
     name: String,
     url: String,
@@ -32,20 +33,18 @@ fn get_repositories() -> Vec<Repository> {
     }
 }
 
+fn render(now: DateTime<Utc>, repositories: &[Repository]) -> String {
+    let tera = Tera::new("templates/**/*.html").unwrap();
+    let mut context = Context::new();
+    context.insert("date", &now.to_rfc3339());
+    context.insert("repositories", repositories);
+    tera.render("index.html", &context).unwrap()
+}
+
 fn main() {
-    let now = Local::now();
-
-    let page = include_str!("template.html");
-    let page = page.replace("{{ date }}", &now.format("%Y-%m-%d %H:%M:%S").to_string());
-
-    let repositories: Vec<_> = get_repositories()
-        .into_iter()
-        .map(|repo| format!("<li><a href=\"{}\">{}</a></li>", repo.url, repo.name))
-        .collect();
-    let repositories = format!("<ul>\n{}\n</ul>", repositories.join("\n"));
-
-    let page = page.replace("{{ repositories }}", &repositories);
-
+    let now = Utc::now();
+    let repositories: Vec<_> = get_repositories();
+    let page = render(now, &repositories);
     fs::create_dir_all("dist").unwrap();
     fs::write("dist/index.html", page).unwrap();
 }
