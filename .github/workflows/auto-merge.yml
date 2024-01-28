@@ -20,6 +20,7 @@ jobs:
         if: steps.auto_merge_test.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
         run: |
           gh pr review "$PR_URL" --approve
           gh pr merge --merge --auto "$PR_URL"
