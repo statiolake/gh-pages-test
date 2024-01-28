@@ -1,7 +1,9 @@
 name: Auto merge if easy change
-
 on: pull_request
-
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
 jobs:
   check:
     runs-on: ubuntu-latest
