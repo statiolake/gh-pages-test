@@ -1,0 +1,23 @@
+name: Auto merge if easy change
+
+on: pull_request
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Needs full history to determine diff
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Test auto-merge availability
+        id: auto_merge_test
+        continue-on-error: true
+        run: cd .github/auto-merge-checker && cargo run
+      - name: Auto merge
+        if: steps.auto_merge_test.outcome == 'success'
+        run: |
+          gh pr review "$PR_URL" --approve
+          gh pr merge --merge --auto "$PR_URL"
