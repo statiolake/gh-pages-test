@@ -18,6 +18,8 @@ jobs:
         run: cd .github/auto-merge-checker && cargo run
       - name: Auto merge
         if: steps.auto_merge_test.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh pr review "$PR_URL" --approve
           gh pr merge --merge --auto "$PR_URL"
