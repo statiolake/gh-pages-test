@@ -7,6 +7,7 @@ fn get_changed_files() -> Vec<String> {
     String::from_utf8_lossy(
         &Command::new("git")
             .arg("diff")
+            .arg("--name-only")
             .arg(format!(
                 "origin/{github_base_ref}...origin/{github_head_ref}"
             ))
